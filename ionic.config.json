@@ -1,0 +1,7 @@
+{
+  "name": "nx-firstbank-ion",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
