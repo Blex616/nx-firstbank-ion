@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title> Banco Nexos </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <h4 class="margin">Tus cuentas</h4>
+  <p class="margin">Selecciona para ver los movimientos</p>
+  <ion-card *ngFor="let item of accounts" (click)="presentModal(item.id)">
+    <ion-card-header>
+      <ion-card-subtitle>{{item?.type}}</ion-card-subtitle>
+      <ion-card-title>{{item?.AcNumber}}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Saldo</ion-label>
+        <ion-input
+          [disabled]="true"
+          class="ion-text-right"
+          [value]="format(item?.balance)"
+        ></ion-input>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

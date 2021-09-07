@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title> Banco Nexos </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="returnHome()">Volver</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <h4 class="margin">Tus cuentas</h4>
+  <p class="margin">Selecciona el origen de tu transacción</p>
+  <ion-card *ngFor="let item of accounts" (click)="presentAlertPrompt(item)">
+    <ion-card-header>
+      <ion-card-subtitle>{{item?.type}}</ion-card-subtitle>
+      <ion-card-title>{{item?.AcNumber}}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Saldo</ion-label>
+        <ion-input
+          [disabled]="true"
+          class="ion-text-right"
+          [value]="format(item?.balance)"
+        ></ion-input>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

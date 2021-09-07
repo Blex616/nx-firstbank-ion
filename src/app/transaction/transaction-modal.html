@@ -1,0 +1,35 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>Cuentas inscritas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true">
+  <!-- <h4 class="margin">Tus cuentas inscritas</h4> -->
+  <p class="margin">Selecciona la cuenta a la que vas a enviar dinero</p>
+  <ion-card
+    *ngFor="let item of thirdAccounts"
+    (click)="presentAlertConfirm(item)"
+  >
+    <ion-card-header>
+      <ion-card-subtitle>
+        {{item.holderIdentification}} {{item.alias}}
+      </ion-card-subtitle>
+      <ion-card-subtitle>
+        Entidad Bancaria: {{item.entityBank}}
+      </ion-card-subtitle>
+      <ion-card-title>
+        {{item?.accountType}}: {{item?.accountNumber}}
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Moneda</ion-label>
+        {{item.coin}}
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

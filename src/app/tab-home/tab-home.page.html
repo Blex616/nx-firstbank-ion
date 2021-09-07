@@ -1,0 +1,38 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title> Banco Nexos </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <img src="../../assets/images/nx.png" />
+    <ion-card-header>
+      <ion-card-subtitle>{{user?.identification}}</ion-card-subtitle>
+      <ion-card-title>{{user?.firstName}} {{user?.lastName}}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      Hola, aqui podras encontrar algunas opciones sobre tus cuentas, inscribir
+      cuentas de terceros y/o hacer tus transacciones.
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Tus opciones</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-segment>
+        <ion-segment-button value="Inscribir Cuenta" (click)="presentModal()">
+          <ion-label>Inscribir</ion-label>
+          <ion-icon name="create"></ion-icon>
+        </ion-segment-button>
+        <ion-segment-button value="Transferir" (click)="presentActionSheet()">
+          <ion-label>Transferir</ion-label>
+          <ion-icon name="send"></ion-icon>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
