@@ -15,6 +15,7 @@ export class UserService {
   }
 
   getUser(paramsRequest?: any) {
-    return this.http.post<any>(this.functions.urlWhithParams('user/getUser', environment.urlServer, ""), paramsRequest, {})
+    let headers = new HttpHeaders({ 'Authorization': this.functions.getJwtWithKey() });
+    return this.http.post<any>(this.functions.urlWhithParams('user/getUser', environment.urlServer, ""), paramsRequest, { headers })
   }
 }
