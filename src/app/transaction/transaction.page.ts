@@ -7,6 +7,8 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { loadAccount, loadThirdAccountUser, transferAccountTrhid } from '../store/actions';
 import { Subscription } from 'rxjs';
+import { EventProxyService } from 'src/utils/event-proxy';
+import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 
 @Component({
   selector: 'app-transaction',
@@ -21,11 +23,15 @@ export class TransactionPage implements OnInit {
 
   accountSub: Subscription;
   userSub: Subscription;
+  eventSub: Subscription;
+
+  Qr: boolean;
 
   constructor(private store: Store<AppState>, public functions: Functions, public router: Router,
     public alertController: AlertController,
     public toastController: ToastController,
-    public modalController: ModalController
+    public modalController: ModalController,
+    public eventProxyService: EventProxyService
   ) { }
 
   ngOnInit() {
@@ -38,6 +44,9 @@ export class TransactionPage implements OnInit {
         this.store.dispatch(loadAccount({ user: user.id }))
       }
     })
+    this.eventSub = this.eventProxyService.getEventSubject().subscribe((param: any) => {
+      if (param?.QR) this.Qr = param.QR;
+    });
   }
 
   ngOnDestroy() {
@@ -52,6 +61,18 @@ export class TransactionPage implements OnInit {
   format(valString) {
     return this.functions.format(valString)
   };
+
+  async goToQr(item) {
+    const modal = await this.modalController.create({
+      component: TransactionModal,
+      componentProps: {
+        user: this.user,
+        accountSelected: item,
+        Qr: this.Qr
+      }
+    });
+    return await modal.present();
+  }
 
   async presentAlertPrompt(item) {
     const alert = await this.alertController.create({
@@ -129,10 +150,16 @@ export class TransactionModal {
   @Input() accountSelected: any;
   @Input() valueToTransfer: any;
   @Input() description: any;
+  @Input() Qr: any;
   thirdAccounts: any;
   thirdAccountUserSub: Subscription;
 
-  constructor(public modalController: ModalController, private store: Store<AppState>, public functions: Functions, public alertController: AlertController, public router: Router) {
+  QrValue: number;
+  QrCoin: String;
+  QrDescription: String;
+  encodedData: any;
+
+  constructor(private scanner: BarcodeScanner, public modalController: ModalController, private store: Store<AppState>, public functions: Functions, public alertController: AlertController, public router: Router) {
 
   }
 
@@ -147,6 +174,22 @@ export class TransactionModal {
 
   ngOnDestroy() {
     this.thirdAccountUserSub?.unsubscribe();
+  }
+
+  generateBarCode() {
+    this.encodedData = {
+      QrValue: this.QrValue,
+      QrCoin: this.QrCoin,
+      QrDescription: this.QrDescription,
+      accountSelected: this.accountSelected
+    };
+    this.scanner.encode(this.scanner.Encode.TEXT_TYPE, this.encodedData).then(
+      res => {
+        this.encodedData = res;
+      }, error => {
+        alert(error);
+      }
+    );
   }
 
   dismissModal() {
@@ -202,7 +245,6 @@ export class TransactionModal {
               acSend: item.accountNumber,
               description: this.description
             }))
-            // this.router.navigate(['home'])
           }
         }
       ]

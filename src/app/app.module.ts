@@ -20,6 +20,10 @@ import { CanActivateViaAuthGuard } from '../utils/can-activate-via-auth-guard'
 import { FormsModule } from '@angular/forms';
 import { ActionTypes } from './store/actions/user.action';
 
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+
+import { EventProxyService } from "../utils/event-proxy";
+
 export function logoutClearState(reducer) {
   return function (state, action) {
     if (action.type === ActionTypes.LOGOUT) {
@@ -45,7 +49,7 @@ export function logoutClearState(reducer) {
       logOnly: environment.production, // Restrict extension to log-only mode
     }),
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, CanActivateViaAuthGuard],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, CanActivateViaAuthGuard, BarcodeScanner, EventProxyService],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

@@ -1,13 +1,17 @@
 import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.reducers';
-import { ModalController } from '@ionic/angular';
+import { AlertController, AlertInput, ModalController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { saveThirdAccountUser } from '../store/actions/third-account-user.actions';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
+import { EventProxyService } from '../../utils/event-proxy';
+import { transferAccountTrhid } from '../store/actions';
+import { loadAccount } from '../store/actions/account.actions';
 
 @Component({
   selector: 'app-tab-home',
@@ -18,12 +22,32 @@ export class TabHomePage {
 
   user: any;
   userSub: Subscription;
+  accountSub: Subscription;
 
-  constructor(private store: Store<AppState>, public modalController: ModalController, private router: Router, public actionSheetController: ActionSheetController) { }
+  scannedBarCode: any;
+  account: any;
+
+  valueToTransfer: number;
+  accountSelected: number;
+  description: String;
+
+  constructor(
+    private scanner: BarcodeScanner,
+    private store: Store<AppState>,
+    public modalController: ModalController,
+    private router: Router,
+    public actionSheetController: ActionSheetController,
+    public eventProxyService: EventProxyService,
+    public alertController: AlertController,
+  ) { }
 
   ngOnInit() {
     this.userSub = this.store.select('user').subscribe(({ user }) => {
       this.user = user;
+      if (this.user?.id) this.store.dispatch(loadAccount({ user: this.user.id }))
+    })
+    this.accountSub = this.store.select("account").subscribe(({ account }) => {
+      this.account = account;
     })
   }
 
@@ -31,9 +55,26 @@ export class TabHomePage {
     this.userSub?.unsubscribe();
   }
 
-  async presentModal() {
+  scanBRcode() {
+    this.scanner.scan().then(res => {
+      this.scannedBarCode = res;
+      this.presentModal(JSON.parse(this.scannedBarCode.text))
+    }).catch(err => {
+      alert(err);
+    });
+  }
+
+  transferQR() {
+    this.eventProxyService.triggerSomeEvent({ QR: true });
+    this.router.navigate(['transaction'])
+  }
+
+  async presentModal(dataQr) {
     const modal = await this.modalController.create({
-      component: TabHomePageModal
+      component: TabHomePageModal,
+      componentProps: {
+        dataQr: dataQr
+      }
     });
     return await modal.present();
   }
@@ -51,14 +92,13 @@ export class TabHomePage {
         text: 'Con código QR',
         icon: 'qr-code-outline',
         handler: () => {
-
+          this.scanBRcode();
         }
       }]
     });
     await actionSheet.present();
     await actionSheet.onDidDismiss();
   }
-
 
 }
 
@@ -69,11 +109,21 @@ export class TabHomePage {
 })
 export class TabHomePageModal {
 
+  @Input() dataQr: any;
+
   thirdPartyUserForm: FormGroup;
+  transferForQR: FormGroup;
   user: any;
   userSub: Subscription;
 
-  constructor(public modalController: ModalController, private store: Store<AppState>, private fb: FormBuilder, public toastController: ToastController) { }
+  valueToTransfer: number;
+  accountSelected: number;
+  description: String;
+
+  accountSub: Subscription;
+  accounts: any;
+
+  constructor(private scanner: BarcodeScanner, public modalController: ModalController, private store: Store<AppState>, private fb: FormBuilder, public toastController: ToastController) { }
 
   ngOnInit() {
     this.thirdPartyUserForm = this.fb.group({
@@ -84,10 +134,17 @@ export class TabHomePageModal {
       holderIdentification: ['', [Validators.required, Validators.pattern('[0-9]*')]],
       coin: ['', Validators.required]
     })
+    this.transferForQR = this.fb.group({
+      valueToTransfer: [this.dataQr?.QrValue, [Validators.required, Validators.pattern('[0-9]*')]],
+      accountSelected: ['', Validators.required],
+      description: [this.dataQr?.QrDescription, Validators.required]
+    })
     this.userSub = this.store.select("user").subscribe(({ user }) => {
       this.user = user;
     })
-
+    this.accountSub = this.store.select("account").subscribe(({ account }) => {
+      this.accounts = account;
+    })
   }
 
   ngOnDestroy() {
@@ -99,6 +156,25 @@ export class TabHomePageModal {
     if (this.user) {
       this.store.dispatch(saveThirdAccountUser({ ...this.thirdPartyUserForm.value, user: this.user.id }))
     }
+  }
+
+  sendTransactionQr() {
+    if (this.transferForQR.invalid) return;
+    let accountC = this.accounts.filter(
+      data => data.AcNumber === this.transferForQR.value.accountSelected
+    )
+    if (accountC.length) {
+      if (this.transferForQR.value.valueToTransfer > accountC[0].balance) {
+        this.presentToast("Saldo insuficiente en la cuenta seleccionada")
+        return;
+      }
+    }
+    this.store.dispatch(transferAccountTrhid({
+      valueToTransfer: this.transferForQR.value.valueToTransfer,
+      acOrigin: this.transferForQR.value.accountSelected,
+      acSend: this.dataQr.accountSelected.AcNumber,
+      description: this.transferForQR.value.description
+    }))
   }
 
   async presentToast(message) {

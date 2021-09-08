@@ -1,13 +1,13 @@
 <ion-header translucent>
   <ion-toolbar>
-    <ion-title>Inscribir Cuenta</ion-title>
+    <ion-title>Banco Nexos</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="dismissModal()">Cerrar</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen>
-  <ion-grid>
+  <ion-grid *ngIf="!dataQr">
     <form [formGroup]="thirdPartyUserForm" (ngSubmit)="saveThirdPartyAccount()">
       <ion-row>
         <ion-col size="12">
@@ -94,6 +94,69 @@
       <ion-row>
         <ion-col size="12">
           <ion-button expand="block" type="submit"> Guardar </ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+  </ion-grid>
+  <ion-grid *ngIf="dataQr">
+    <form [formGroup]="transferForQR" (ngSubmit)="sendTransactionQr()">
+      <ion-row>
+        <ion-col size="12">
+          <h6><b>Datos de destinatario</b></h6>
+          <p>Número de cuenta: {{dataQr.accountSelected.AcNumber}}</p>
+          <p>Tipo de cuenta: {{dataQr.accountSelected.type}}</p>
+          <p>
+            Propietario: {{dataQr.accountSelected.user?.firstName}}
+            {{dataQr.accountSelected.user?.lastName}}
+          </p>
+          <p>Moneda: {{dataQr.QrCoin}}</p>
+          <p>Descripción: {{transferForQR.value.description}}</p>
+
+          <h6><b>Saldo a enviar</b></h6>
+          <p>{{transferForQR.value.valueToTransfer}}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label>Cuenta de origen</ion-label>
+            <ion-select
+              placeholder="Selecciona"
+              okText="Aceptar"
+              cancelText="Cancelar"
+              formControlName="accountSelected"
+            >
+              <ion-select-option
+                *ngFor="let item of accounts"
+                [value]="item.AcNumber"
+                >{{item.AcNumber}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating">Valor a transferir</ion-label>
+            <ion-input
+              type="number"
+              formControlName="valueToTransfer"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating">Breve descripción</ion-label>
+            <ion-input formControlName="description"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-button expand="block" type="submit"> Enviar </ion-button>
         </ion-col>
       </ion-row>
     </form>

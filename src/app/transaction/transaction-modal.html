@@ -7,29 +7,80 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
-  <!-- <h4 class="margin">Tus cuentas inscritas</h4> -->
-  <p class="margin">Selecciona la cuenta a la que vas a enviar dinero</p>
-  <ion-card
-    *ngFor="let item of thirdAccounts"
-    (click)="presentAlertConfirm(item)"
-  >
-    <ion-card-header>
-      <ion-card-subtitle>
-        {{item.holderIdentification}} {{item.alias}}
-      </ion-card-subtitle>
-      <ion-card-subtitle>
-        Entidad Bancaria: {{item.entityBank}}
-      </ion-card-subtitle>
-      <ion-card-title>
-        {{item?.accountType}}: {{item?.accountNumber}}
-      </ion-card-title>
-    </ion-card-header>
+  <ion-grid *ngIf="!Qr">
+    <ion-row>
+      <ion-col size="12">
+        <p class="margin">Selecciona la cuenta a la que vas a enviar dinero</p>
+        <ion-card
+          *ngFor="let item of thirdAccounts"
+          (click)="presentAlertConfirm(item)"
+        >
+          <ion-card-header>
+            <ion-card-subtitle>
+              {{item.holderIdentification}} {{item.alias}}
+            </ion-card-subtitle>
+            <ion-card-subtitle>
+              Entidad Bancaria: {{item.entityBank}}
+            </ion-card-subtitle>
+            <ion-card-title>
+              {{item?.accountType}}: {{item?.accountNumber}}
+            </ion-card-title>
+          </ion-card-header>
 
-    <ion-card-content>
-      <ion-item>
-        <ion-label>Moneda</ion-label>
-        {{item.coin}}
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+          <ion-card-content>
+            <ion-item>
+              <ion-label>Moneda</ion-label>
+              {{item.coin}}
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid *ngIf="Qr">
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>¿Te transfieren?</ion-card-subtitle>
+            <ion-card-title>Genera tú código QR</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="12">
+                <ion-item>
+                  <ion-label position="floating">Especificar valor</ion-label>
+                  <ion-input [(ngModel)]="QrValue"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12">
+                <ion-item>
+                  <ion-label position="floating">Moneda</ion-label>
+                  <ion-input [(ngModel)]="QrCoin"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="12">
+                <ion-item>
+                  <ion-label position="floating">Breve descripción</ion-label>
+                  <ion-input [(ngModel)]="QrDescription"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <ion-button
+                  color="primary"
+                  (click)="generateBarCode()"
+                  expand="block"
+                >
+                  Generar codigo QR
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
