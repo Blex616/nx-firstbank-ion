@@ -226,7 +226,7 @@ export class TransactionModal {
       </div>
       <div>
         <h6><b>Saldo a enviar</b></h6>
-        <p>${this.valueToTransfer}</p>
+        <p>${this.functions.format(this.valueToTransfer)}</p>
       </div>
       `,
       buttons: [

@@ -9,7 +9,7 @@
 
 <ion-content [fullscreen]="true">
   <h4 class="margin">Tus cuentas</h4>
-  <p class="margin">Selecciona el origen de tu transacción</p>
+  <p class="margin">Selecciona tú cuenta</p>
   <ion-card
     *ngFor="let item of accounts"
     (click)="!Qr ? presentAlertPrompt(item): goToQr(item)"

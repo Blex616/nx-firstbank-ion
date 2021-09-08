@@ -35,6 +35,17 @@
           </ion-card-content>
         </ion-card>
       </ion-col>
+      <ion-col size="12" *ngIf="!thirdAccounts?.length">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>
+              <b>
+                No hay cuentas inscritas, por favor inscriba una para continuar
+              </b>
+            </ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
     </ion-row>
   </ion-grid>
 

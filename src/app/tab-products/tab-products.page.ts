@@ -15,9 +15,6 @@ import { Subscription } from 'rxjs';
 })
 export class TabProductsPage {
 
-  DECIMAL_SEPARATOR = ".";
-  GROUP_SEPARATOR = ",";
-
   accounts: any;
   modal: any;
 

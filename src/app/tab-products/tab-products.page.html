@@ -12,7 +12,6 @@
       <ion-card-subtitle>{{item?.type}}</ion-card-subtitle>
       <ion-card-title>{{item?.AcNumber}}</ion-card-title>
     </ion-card-header>
-
     <ion-card-content>
       <ion-item>
         <ion-label>Saldo</ion-label>
@@ -23,5 +22,12 @@
         ></ion-input>
       </ion-item>
     </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf="!accounts?.length">
+    <ion-card-header>
+      <ion-card-subtitle>
+        <b> No tienes ningún producto </b>
+      </ion-card-subtitle>
+    </ion-card-header>
   </ion-card>
 </ion-content>
