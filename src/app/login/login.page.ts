@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.reducers';
 import { loginUser, setError } from '../store/actions';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-login',
@@ -13,9 +14,11 @@ export class LoginPage implements OnInit {
   txtUser = '';
   txtPassword = '';
 
-  constructor(private store: Store<AppState>) { }
+  constructor(private store: Store<AppState>, private app: AppComponent) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.app.validateLogin();
+  }
 
   loginClient() {
     let paramsRequest = {
