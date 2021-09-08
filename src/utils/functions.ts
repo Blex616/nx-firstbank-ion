@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 // @ts-ignore  
 import jwt_decode from "jwt-decode";
-import { DomSanitizer } from '@angular/platform-browser';
 declare var $: any;
 
 
@@ -51,11 +50,11 @@ export class Functions {
 
     format(valString) {
         if (!valString) {
-            return '';
+            return 0;
         }
         let val = valString.toString();
         const parts = this.unFormat(val).split(this.DECIMAL_SEPARATOR);
-        return parts[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, this.GROUP_SEPARATOR) + (!parts[1] ? '' : this.DECIMAL_SEPARATOR + parts[1]);
+        return `$ ${parts[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, this.GROUP_SEPARATOR) + (!parts[1] ? '' : this.DECIMAL_SEPARATOR + parts[1])}`
     };
 
     unFormat(val) {
