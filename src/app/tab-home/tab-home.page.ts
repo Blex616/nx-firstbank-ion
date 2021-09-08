@@ -86,6 +86,7 @@ export class TabHomePage {
         text: 'A cuentas inscritas',
         icon: 'send-outline',
         handler: () => {
+          this.eventProxyService.triggerSomeEvent({ QR: false });
           this.router.navigate(['transaction'])
         }
       }, {

@@ -52,6 +52,7 @@ export class TransactionPage implements OnInit {
   ngOnDestroy() {
     this.accountSub?.unsubscribe();
     this.userSub?.unsubscribe();
+    this.eventSub?.unsubscribe();
   }
 
   returnHome() {
