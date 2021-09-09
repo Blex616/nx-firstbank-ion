@@ -5,6 +5,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content> </ion-refresher-content>
+  </ion-refresher>
   <h4 class="margin">Tus cuentas</h4>
   <p class="margin">Selecciona para ver los movimientos</p>
   <ion-card *ngFor="let item of accounts" (click)="presentModal(item.id)">

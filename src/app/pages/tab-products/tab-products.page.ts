@@ -9,6 +9,7 @@ import { Functions } from '../../../utils/functions';
 import { Subscription } from 'rxjs';
 import { Account } from '../../models/account.model';
 import { AccountHistory } from '../../models/account-history.model';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-tab-products',
@@ -18,6 +19,7 @@ import { AccountHistory } from '../../models/account-history.model';
 export class TabProductsPage {
 
   accounts: Account[];
+  user: User;
 
   userSub: Subscription;
   accountSub: Subscription;
@@ -26,9 +28,8 @@ export class TabProductsPage {
 
   ngOnInit() {
     this.userSub = this.store.select('user').subscribe(({ user }) => {
-      if (user) {
-        this.store.dispatch(loadAccount({ user: user.id }))
-      }
+      this.user = user;
+      this.dispatchUser();
     })
 
     this.accountSub = this.store.select("account").subscribe(({ account }) => {
@@ -37,9 +38,20 @@ export class TabProductsPage {
 
   }
 
+  dispatchUser() {
+    if (this.user) {
+      this.store.dispatch(loadAccount({ user: this.user.id }))
+    }
+  }
+
   ngOnDestroy() {
     this.userSub?.unsubscribe();
     this.accountSub?.unsubscribe();
+  }
+
+  doRefresh(event) {
+    event.target.complete();
+    this.dispatchUser();
   }
 
   format(valString) {
@@ -77,16 +89,25 @@ export class TabModal {
   }
 
   ngOnInit() {
-    if (this.accountId) {
-      this.store.dispatch(loadAccountHistory({ account: this.accountId }));
-    }
+    this.dispatchAccountHistory()
     this.accountHistorySub = this.store.select("accountHistory").subscribe(({ accountHistory }) => {
       this.accountHistory = accountHistory;
     })
   }
 
+  dispatchAccountHistory() {
+    if (this.accountId) {
+      this.store.dispatch(loadAccountHistory({ account: this.accountId }));
+    }
+  }
+
   ngOnDestroy() {
     this.accountHistorySub?.unsubscribe();
+  }
+
+  doRefresh(event) {
+    event.target.complete();
+    this.dispatchAccountHistory();
   }
 
   dismissModal() {
