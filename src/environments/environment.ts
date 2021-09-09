@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  urlServer: "http://localhost:8000/api/"
-  // urlServer: "http://73bc-181-51-32-176.ngrok.io/api/"
+  // urlServer: "http://localhost:8000/api/"
+  urlServer: "http://aecd-181-51-32-176.ngrok.io/api/"
 };
 
 /*

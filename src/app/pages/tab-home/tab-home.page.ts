@@ -3,15 +3,17 @@ import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.reducers';
 import { AlertController, AlertInput, ModalController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { saveThirdAccountUser } from '../store/actions/third-account-user.actions';
+import { saveThirdAccountUser } from '../../store/actions/third-account-user.actions';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
-import { EventProxyService } from '../../utils/event-proxy';
-import { transferAccountTrhid } from '../store/actions';
-import { loadAccount } from '../store/actions/account.actions';
+import { EventProxyService } from '../../../utils/event-proxy';
+import { transferAccountTrhid } from '../../store/actions';
+import { loadAccount } from '../../store/actions/account.actions';
+import { User } from '../../models/user.model';
+import { Account } from '../../models/account.model';
 
 @Component({
   selector: 'app-tab-home',
@@ -20,12 +22,13 @@ import { loadAccount } from '../store/actions/account.actions';
 })
 export class TabHomePage {
 
-  user: any;
   userSub: Subscription;
   accountSub: Subscription;
 
   scannedBarCode: any;
-  account: any;
+
+  user: User;
+  account: Account[];
 
   valueToTransfer: number;
   accountSelected: number;
@@ -114,15 +117,16 @@ export class TabHomePageModal {
 
   thirdPartyUserForm: FormGroup;
   transferForQR: FormGroup;
-  user: any;
+
   userSub: Subscription;
+  accountSub: Subscription;
+
+  user: User;
+  accounts: Account[];
 
   valueToTransfer: number;
   accountSelected: number;
   description: String;
-
-  accountSub: Subscription;
-  accounts: any;
 
   constructor(private scanner: BarcodeScanner, public modalController: ModalController, private store: Store<AppState>, private fb: FormBuilder, public toastController: ToastController) { }
 

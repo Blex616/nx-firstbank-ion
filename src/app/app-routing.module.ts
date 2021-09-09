@@ -7,16 +7,16 @@ const routes: Routes = [
   {
     path: 'home',
     canActivate: [CanActivateViaAuthGuard],
-    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+    loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule)
   },
   {
     path: 'transaction',
     canActivate: [CanActivateViaAuthGuard],
-    loadChildren: () => import('./transaction/transaction.module').then(m => m.TransactionPageModule)
+    loadChildren: () => import('./pages/transaction/transaction.module').then(m => m.TransactionPageModule)
   },
   {
     path: 'login',
-    loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
   },
 ];
 @NgModule({

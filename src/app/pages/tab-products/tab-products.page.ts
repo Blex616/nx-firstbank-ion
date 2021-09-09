@@ -1,12 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.reducers';
-import { loadAccount, setError } from '../store/actions';
+import { loadAccount, setError } from '../../store/actions';
 import { ModalController } from '@ionic/angular';
-import { loadAccountHistory } from '../store/actions/account-history.actions';
+import { loadAccountHistory } from '../../store/actions/account-history.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Functions } from '../../utils/functions';
+import { Functions } from '../../../utils/functions';
 import { Subscription } from 'rxjs';
+import { Account } from '../../models/account.model';
+import { AccountHistory } from '../../models/account-history.model';
 
 @Component({
   selector: 'app-tab-products',
@@ -15,8 +17,7 @@ import { Subscription } from 'rxjs';
 })
 export class TabProductsPage {
 
-  accounts: any;
-  modal: any;
+  accounts: Account[];
 
   userSub: Subscription;
   accountSub: Subscription;
@@ -46,13 +47,13 @@ export class TabProductsPage {
   };
 
   async presentModal(account) {
-    this.modal = await this.modalController.create({
+    const modal = await this.modalController.create({
       component: TabModal,
       componentProps: {
-        account: account,
+        accountId: account,
       }
     });
-    return await this.modal.present();
+    return await modal.present();
   }
 
 }
@@ -65,17 +66,19 @@ export class TabProductsPage {
 })
 export class TabModal {
 
-  @Input() account: any;
-  accountHistory: any;
+  @Input() accountId: number;
+
   accountHistorySub: Subscription;
+
+  accountHistory: AccountHistory[];
 
   constructor(public modalController: ModalController, private store: Store<AppState>, public functions: Functions) {
 
   }
 
   ngOnInit() {
-    if (this.account) {
-      this.store.dispatch(loadAccountHistory({ account: this.account }));
+    if (this.accountId) {
+      this.store.dispatch(loadAccountHistory({ account: this.accountId }));
     }
     this.accountHistorySub = this.store.select("accountHistory").subscribe(({ accountHistory }) => {
       this.accountHistory = accountHistory;

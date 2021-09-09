@@ -1,8 +1,9 @@
 export class User {
     id: number;
+    identification: string;
+    username: string;
     firstName: string;
     lastName?: File;
-    identification: string;
     role: string;
     accessToken: string;
 }

@@ -1,8 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
+import { ErrorModel } from 'src/app/models/error.model';
 import { setError, clearError } from '../actions';
 
 export interface ErrorState {
-    error: any
+    error: ErrorModel
 }
 
 export const errorInitialState: ErrorState = {
@@ -19,7 +20,7 @@ const _errorReducer = createReducer(errorInitialState,
             message: payload.error.message_error
         }
     })),
-    on(clearError, state => ({ ...state, error: {} })),
+    on(clearError, state => ({ ...state, error: new ErrorModel })),
 
 );
 

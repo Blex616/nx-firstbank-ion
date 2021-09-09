@@ -5,10 +5,13 @@ import { Functions } from 'src/utils/functions';
 import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
-import { loadAccount, loadThirdAccountUser, transferAccountTrhid } from '../store/actions';
+import { loadAccount, loadThirdAccountUser, transferAccountTrhid } from '../../store/actions';
 import { Subscription } from 'rxjs';
 import { EventProxyService } from 'src/utils/event-proxy';
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
+import { User } from '../../models/user.model';
+import { Account } from '../../models/account.model';
+import { ThirdPartyAccount } from '../../models/third-party-account.model';
 
 @Component({
   selector: 'app-transaction',
@@ -17,15 +20,15 @@ import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 })
 export class TransactionPage implements OnInit {
 
-  accounts: any;
+  Qr: boolean;
 
-  user: any;
+  accounts: Account[];
+  user: User;
 
   accountSub: Subscription;
   userSub: Subscription;
   eventSub: Subscription;
 
-  Qr: boolean;
 
   constructor(private store: Store<AppState>, public functions: Functions, public router: Router,
     public alertController: AlertController,
@@ -147,20 +150,27 @@ export class TransactionPage implements OnInit {
 })
 export class TransactionModal {
 
-  @Input() user: any;
-  @Input() accountSelected: any;
-  @Input() valueToTransfer: any;
-  @Input() description: any;
-  @Input() Qr: any;
-  thirdAccounts: any;
+  @Input() user: User;
+  @Input() accountSelected: Account;
+  @Input() valueToTransfer: number;
+  @Input() description: String;
+  @Input() Qr: boolean;
+
+  thirdAccounts: ThirdPartyAccount[];
   thirdAccountUserSub: Subscription;
 
   QrValue: number;
   QrCoin: String;
   QrDescription: String;
-  encodedData: any;
+  encodedData: object;
 
-  constructor(private scanner: BarcodeScanner, public modalController: ModalController, private store: Store<AppState>, public functions: Functions, public alertController: AlertController, public router: Router) {
+  constructor(
+    private scanner: BarcodeScanner,
+    public modalController: ModalController,
+    private store: Store<AppState>,
+    public functions: Functions,
+    public alertController: AlertController,
+    public router: Router) {
 
   }
 

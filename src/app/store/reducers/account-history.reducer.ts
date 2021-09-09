@@ -1,8 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
 import { loadAccountHistory, setAccountHistory, clearAccountHistory } from '../actions';
+import { AccountHistory } from '../../models/account-history.model';
 
 export interface AccountHistoryState {
-    accountHistory: any
+    accountHistory: AccountHistory[]
 }
 
 export const accountHistoryInitialState: AccountHistoryState = {
@@ -15,8 +16,8 @@ const _accountHistoryReducer = createReducer(accountHistoryInitialState,
         ...state,
         account: account
     })),
-    on(setAccountHistory, (state, { account }) => ({ ...state, accountHistory: account })),
-    on(clearAccountHistory, state => ({ ...state, account: {} })),
+    on(setAccountHistory, (state, { accountHistory }) => ({ ...state, accountHistory: accountHistory })),
+    on(clearAccountHistory, state => ({ ...state, accountHistory: [] })),
 
 );
 

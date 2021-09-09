@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { AppState } from '../store/app.reducers';
+import { AppState } from '../../store/app.reducers';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { User } from '../models/user.model';
-import { Logout } from '../store/actions/user.action';
+import { User } from '../../models/user.model';
+import { Logout } from '../../store/actions/user.action';
 
 @Component({
   selector: 'app-tab-profile',

@@ -1,8 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
 import { loadThirdAccountUser, saveThirdAccountUser, setThirdAccountUser, clearThirdAccountUser } from '../actions';
+import { ThirdPartyAccount } from '../../models/third-party-account.model';
 
 export interface ThirdAccountUserState {
-    thirdAccountUser: any
+    thirdAccountUser: ThirdPartyAccount[]
 }
 
 export const thirdAccountUserInitialState: ThirdAccountUserState = {

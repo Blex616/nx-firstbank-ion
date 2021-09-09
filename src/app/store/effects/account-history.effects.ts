@@ -23,7 +23,7 @@ export class AccountHistoryEffects {
                         tap(data => {
                             this.store$.dispatch(stopLoading())
                         }),
-                        map(account => setAccountHistory({ account: account })),
+                        map(accountHistory => setAccountHistory({ accountHistory: accountHistory })),
                         catchError(err => {
                             this.store$.dispatch(stopLoading())
                             return of(setError({ payload: err }))
